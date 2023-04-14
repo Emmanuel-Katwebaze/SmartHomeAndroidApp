@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/favorites_navBtn"
+        android:icon="@drawable/ic_favorite"
+        android:title="Favorites"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/things_navBtn"
+        android:icon="@drawable/ic_bc_things"
+        android:title="Things"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/routines_navBtn"
+        android:icon="@drawable/ic_routine"
+        android:title="Routines"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/ideas_navBtn"
+        android:icon="@drawable/ic_idea"
+        android:title="Ideas"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/settings_navBtn"
+        android:icon="@drawable/ic_settings"
+        android:title="Settings"
+        app:showAsAction="always"/>
+
+</menu>
