@@ -29,6 +29,12 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
 
+        val selectedFragment = intent.getStringExtra("SELECTED_FRAGMENT")
+        if (selectedFragment == "routines") {
+            replaceFragment(routinesFragment)
+        } else {
+            replaceFragment(favoritesFragment)
+        }
 
 
         bottomNavigationView.selectedItemId = R.id.favorites_navBtn;
@@ -58,6 +64,7 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
 
     }
 
