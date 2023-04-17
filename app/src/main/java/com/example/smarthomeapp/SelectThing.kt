@@ -21,6 +21,7 @@ class SelectThing : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.selectThingToolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         tabLayout = findViewById(R.id.tabLayoutSelectThings)

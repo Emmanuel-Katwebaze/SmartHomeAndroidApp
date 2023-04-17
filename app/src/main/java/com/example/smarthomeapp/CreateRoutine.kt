@@ -12,6 +12,7 @@ import android.text.TextWatcher
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
 import com.example.smarthomeapp.Database.DatabaseHandler
 import com.example.smarthomeapp.Models.RoutineModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -28,9 +29,17 @@ class CreateRoutine : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_routine)
 
+        val toolbar = findViewById<Toolbar>(R.id.create_routine_toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            setHomeAsUpIndicator(R.drawable.ic_clear)
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowTitleEnabled(false)
+        }
+
         val addActionButton = findViewById<FloatingActionButton>(R.id.AddActionFAB)
         val addEventButton = findViewById<FloatingActionButton>(R.id.AddEventFAB)
-        routineNameET  = findViewById(R.id.etRoutineName)
+        routineNameET = findViewById(R.id.etRoutineName)
         sharedPreferences = getSharedPreferences(SHARED_PREFS_KEY, Context.MODE_PRIVATE)
 
         // Getting the various shared preferences on page load
@@ -42,7 +51,6 @@ class CreateRoutine : AppCompatActivity() {
         //setting on click listeners to the various buttons
         addActionButton.setOnClickListener { addAction() }
         addEventButton.setOnClickListener { addEvent() }
-
 
 
         val notificationCreated = intent.getBooleanExtra("notificationCreated", false)
@@ -78,7 +86,8 @@ class CreateRoutine : AppCompatActivity() {
         val notificationText = sharedPreferences.getString("NotificationPrefs", null)
         if (notificationText != null) {
             val actionRowLayout = layoutInflater.inflate(R.layout.action_row, null)
-            actionRowLayout.findViewById<TextView>(R.id.tv_AddNotification).text = "Send Notification: $notificationText"
+            actionRowLayout.findViewById<TextView>(R.id.tv_AddNotification).text =
+                "Send Notification: $notificationText"
             val container = findViewById<ViewGroup>(R.id.actionsTVContainer)
             val actionsTV = findViewById<TextView>(R.id.actionsTV)
             val index = container.indexOfChild(actionsTV)
@@ -120,24 +129,29 @@ class CreateRoutine : AppCompatActivity() {
         val minute = calendar.get(Calendar.MINUTE)
         val amPm = calendar.get(Calendar.AM_PM)
 
-        val timePickerDialog = TimePickerDialog(this,
+        val timePickerDialog = TimePickerDialog(
+            this,
             TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
-                val hourText = if (selectedHour == 0 || selectedHour == 12) "12" else (selectedHour % 12).toString()
+                val hourText =
+                    if (selectedHour == 0 || selectedHour == 12) "12" else (selectedHour % 12).toString()
                 val minuteText = if (selectedMinute < 10) "0$selectedMinute" else "$selectedMinute"
                 val amPmText = if (amPm == Calendar.AM) "AM" else "PM"
                 val timeText = "$hourText:$minuteText $amPmText"
 
                 // Inflate the LinearLayout resource file
                 val eventRowLayout = layoutInflater.inflate(R.layout.event_row, null)
-                // Update the text of the TextView in the LinearLayout
-               // eventRowLayout.findViewById<TextView>(R.id.tv_AddTime).text = "The time is $timeText"
+
+
                 // Replace the TextView with id @+id/selectedTimeTV with the inflated LinearLayout
                 val selectedTimeTVContainer = findViewById<ViewGroup>(R.id.selectedTimeTVContainer)
                 val selectedTimeTV = findViewById<TextView>(R.id.selectedTimeTV)
+
                 val index = selectedTimeTVContainer.indexOfChild(selectedTimeTV)
                 selectedTimeTVContainer.removeView(selectedTimeTV)
                 selectedTimeTVContainer.addView(eventRowLayout, index)
-                eventRowLayout.id = R.id.selectedTimeTV // Set the ID of the inflated LinearLayout to the ID of the TextView that was removed
+
+                eventRowLayout.id =
+                    R.id.selectedTimeTV // Set the ID of the inflated LinearLayout to the ID of the TextView that was removed
 
                 // Change the text in the text view with id @+id/tv_AddTime
                 findViewById<TextView>(R.id.tv_AddTime).text = "The time is $timeText"
@@ -167,7 +181,7 @@ class CreateRoutine : AppCompatActivity() {
         startActivity(intent)
     }
 //requireContext is only in fragments
-    // all occurences CTRL + SHIFT + ALT + J
+    // all occurrences CTRL + SHIFT + ALT + J
 
     private fun showInputDialog() {
         val builder = AlertDialog.Builder(this)
@@ -181,7 +195,8 @@ class CreateRoutine : AppCompatActivity() {
             val inputText = input.text.toString()
 
             val actionRowLayout = layoutInflater.inflate(R.layout.action_row, null)
-            actionRowLayout.findViewById<TextView>(R.id.tv_AddNotification).text = "Send Notification: $inputText"
+            actionRowLayout.findViewById<TextView>(R.id.tv_AddNotification).text =
+                "Send Notification: $inputText"
             val container = findViewById<ViewGroup>(R.id.actionsTVContainer)
             val actionsTV = findViewById<TextView>(R.id.actionsTV)
             val index = container.indexOfChild(actionsTV)
@@ -213,33 +228,42 @@ class CreateRoutine : AppCompatActivity() {
         builder.setTitle("Creating new routine")
         builder.setCancelable(false)
 
-        val progressBar = ProgressBar(this)
-        builder.setView(progressBar)
+//        val progressBar = ProgressBar(this, null, android.R.style.Widget_DeviceDefault_Light_ProgressBar_Horizontal)
+//        builder.setView(progressBar)
+
+        val dialogLayout = layoutInflater.inflate(R.layout.dialog_custom_progress_bar, null)
+        builder.setView(dialogLayout)
+
+        // Start the progress bar animation
+        val progressBar = dialogLayout.findViewById<ProgressBar>(R.id.progressBar)
+        progressBar.isIndeterminate = true
+        progressBar.animate()
 
         val dialog = builder.create()
         dialog.show()
 
-        //TODO: Replace this with the logic to create a new routine using the entered value
-//        Handler().postDelayed({
-//            dialog.dismiss()
-//        }, 3000)
-
         addRoutineRecord()
+
+        Handler().postDelayed({
+
+            dialog.dismiss()
+        }, 3000)
+
     }
 
     private fun addRoutineRecord() {
         val routine = sharedPreferences.getString("routineName", null)
         val databaseHandler: DatabaseHandler = DatabaseHandler(this)
-        if(routine?.isNotEmpty() == true){
-            val status = databaseHandler.addRoutine(RoutineModel(0, routine,"Never"))
-            if (status > -1){
+        if (routine?.isNotEmpty() == true) {
+            val status = databaseHandler.addRoutine(RoutineModel(0, routine, "Never"))
+            if (status > -1) {
                 Toast.makeText(applicationContext, "Record saved", Toast.LENGTH_LONG).show()
                 sharedPreferences.edit().clear().apply()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.putExtra("SELECTED_FRAGMENT", "routines")
                 startActivity(intent)
             }
-        }else{
+        } else {
             Toast.makeText(applicationContext, "Error creating routine", Toast.LENGTH_LONG).show()
         }
     }

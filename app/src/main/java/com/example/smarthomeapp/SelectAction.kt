@@ -18,8 +18,11 @@ class SelectAction : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.selectActionToolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.apply {
+            setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowTitleEnabled(false)
+        }
 
         tabLayout = findViewById(R.id.actionTabLayoutSelectThings)
         viewPager = findViewById(R.id.actionViewPager)

@@ -13,8 +13,11 @@ class SelectEvent : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.selectEventToolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.apply {
+            setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowTitleEnabled(false)
+        }
 
 
         val selectEventTimeTV = findViewById<TextView>(R.id.selectEventTimeTV)

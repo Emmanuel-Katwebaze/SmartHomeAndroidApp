@@ -25,8 +25,11 @@ class SelectRoutine : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.selectRoutineToolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.apply {
+            setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowTitleEnabled(false)
+        }
         // Initialize views
         rvSelectRoutinesList = findViewById(R.id.rvSelectRoutinesList)
 

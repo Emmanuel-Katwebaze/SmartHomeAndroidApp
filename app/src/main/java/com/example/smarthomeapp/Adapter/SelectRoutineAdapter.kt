@@ -50,16 +50,6 @@ class SelectRoutineAdapter(val context: Context, val items: ArrayList<RoutineMod
         val item = items.get(position)
         holder.tv_selectRoutineRoutineName.text = item.routineName
 
-        if (position % 2 == 0) {
-            holder.llMain.setBackgroundColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.colorLightGray
-                )
-            )
-        } else {
-            holder.llMain.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
-        }
     }
 
     //Gets the number of items in the list
