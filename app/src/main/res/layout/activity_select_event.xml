@@ -55,6 +55,7 @@
             android:background="@drawable/border_top" />
 
         <TextView
+            android:id="@+id/selectEventTimeTV2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="10dp"
@@ -69,6 +70,7 @@
             android:background="@drawable/border_top" />
 
         <TextView
+            android:id="@+id/selectEventTimeTV3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="10dp"
@@ -84,6 +86,7 @@
             android:background="@drawable/border_top" />
 
         <TextView
+            android:id="@+id/selectEventTimeTV4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="10dp"
@@ -99,6 +102,7 @@
             android:background="@drawable/border_top" />
 
         <TextView
+            android:id="@+id/selectEventTimeTV5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="10dp"
@@ -114,6 +118,7 @@
             android:background="@drawable/border_top" />
 
         <TextView
+            android:id="@+id/selectEventTimeTV6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="10dp"
@@ -129,6 +134,7 @@
             android:background="@drawable/border_top" />
 
         <TextView
+            android:id="@+id/selectEventTimeTV7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="10dp"
