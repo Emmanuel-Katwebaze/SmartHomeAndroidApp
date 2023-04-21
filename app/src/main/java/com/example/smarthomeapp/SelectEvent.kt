@@ -8,6 +8,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
 
 class SelectEvent : AppCompatActivity() {
@@ -15,12 +16,9 @@ class SelectEvent : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_event)
 
-        val toolbar = findViewById<Toolbar>(R.id.selectEventToolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.apply {
-            setHomeAsUpIndicator(R.drawable.ic_arrow_back)
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowTitleEnabled(false)
+        val arrowBack: AppCompatImageView = findViewById(R.id.arrow_back)
+        arrowBack.setOnClickListener {
+            finish()
         }
 
 

@@ -5,38 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/abThings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <include
+        android:id="@+id/abActionThings"
+        layout="@layout/select_thing_appbar"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/selectThingToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/yellow"
-            app:menu="@menu/smart_home_routines_menu">
-
-            <TextView
-                android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select a Thing"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="normal" />
-
-        </androidx.appcompat.widget.Toolbar>
-    </com.google.android.material.appbar.AppBarLayout>
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayoutSelectThings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/abThings" />
+        app:layout_constraintTop_toBottomOf="@+id/abActionThings" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"

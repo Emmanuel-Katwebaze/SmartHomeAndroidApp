@@ -2,6 +2,7 @@ package com.example.smarthomeapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.viewpager.widget.ViewPager
 import com.example.smarthomeapp.Adapter.MyAdapter
@@ -16,13 +17,11 @@ class SelectAction : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_action)
 
-        val toolbar = findViewById<Toolbar>(R.id.selectActionToolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.apply {
-            setHomeAsUpIndicator(R.drawable.ic_arrow_back)
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowTitleEnabled(false)
+        val arrowBack: AppCompatImageView = findViewById(R.id.arrow_back)
+        arrowBack.setOnClickListener {
+            finish()
         }
+
 
         tabLayout = findViewById(R.id.actionTabLayoutSelectThings)
         viewPager = findViewById(R.id.actionViewPager)

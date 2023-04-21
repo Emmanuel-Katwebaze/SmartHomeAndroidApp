@@ -12,6 +12,7 @@ import android.text.TextWatcher
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
 import com.example.smarthomeapp.Database.DatabaseHandler
 import com.example.smarthomeapp.Models.RoutineModel
@@ -29,12 +30,9 @@ class CreateRoutine : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_routine)
 
-        val toolbar = findViewById<Toolbar>(R.id.create_routine_toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.apply {
-            setHomeAsUpIndicator(R.drawable.ic_clear)
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowTitleEnabled(false)
+        val cancel: AppCompatImageView = findViewById(R.id.cancel_button)
+        cancel.setOnClickListener {
+            finish()
         }
 
         val addActionButton = findViewById<FloatingActionButton>(R.id.AddActionFAB)
@@ -65,20 +63,6 @@ class CreateRoutine : AppCompatActivity() {
             intent.putExtra("timeSet", false) // set timeSet value to false
         }
 
-//        routineNameET.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(string: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//                //do nothing
-//            }
-//
-//            override fun onTextChanged(string: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//                //do nothing
-//            }
-//
-//            override fun afterTextChanged(string: Editable?) {
-//                // Save the entered text to SharedPreferences
-//                sharedPreferences.edit().putString("routineName", string.toString()).apply()
-//            }
-//        })
 
     }
 

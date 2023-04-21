@@ -2,6 +2,7 @@ package com.example.smarthomeapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
@@ -18,11 +19,10 @@ class SelectThing : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_thing)
 
-        val toolbar = findViewById<Toolbar>(R.id.selectThingToolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        val arrowBack: AppCompatImageView = findViewById(R.id.arrow_back)
+        arrowBack.setOnClickListener {
+            finish()
+        }
 
         tabLayout = findViewById(R.id.tabLayoutSelectThings)
         viewPager = findViewById(R.id.viewPager)
