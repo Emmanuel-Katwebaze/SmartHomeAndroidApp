@@ -50,16 +50,16 @@ class RoutineItemAdapter(val context: Context, val items: ArrayList<RoutineModel
         holder.tvActiveRoutineName.text = item.routineName
         holder.tv_ActiveRoutineLastRun.text = "Last Run: " + item.lastRun
 
-        if (position % 2 == 0) {
-            holder.llMain.setBackgroundColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.colorLightGray
-                )
-            )
-        } else {
-            holder.llMain.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
-        }
+//        if (position % 2 == 0) {
+//            holder.llMain.setBackgroundColor(
+//                ContextCompat.getColor(
+//                    context,
+//                    R.color.colorLightGray
+//                )
+//            )
+//        } else {
+//            holder.llMain.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+//        }
     }
 
     //Gets the number of items in the list

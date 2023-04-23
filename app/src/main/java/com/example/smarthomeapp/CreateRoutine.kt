@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -17,13 +18,14 @@ import androidx.appcompat.widget.Toolbar
 import com.example.smarthomeapp.Database.DatabaseHandler
 import com.example.smarthomeapp.Models.RoutineModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
 import java.util.*
 
 
 class CreateRoutine : AppCompatActivity() {
     //private lateinit var actionRowLayout: LinearLayout
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var routineNameET: EditText
+    private lateinit var routineNameET: TextInputEditText
     private val SHARED_PREFS_KEY = "MySharedPreferences"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +39,7 @@ class CreateRoutine : AppCompatActivity() {
 
         val addActionButton = findViewById<FloatingActionButton>(R.id.AddActionFAB)
         val addEventButton = findViewById<FloatingActionButton>(R.id.AddEventFAB)
+
         routineNameET = findViewById(R.id.etRoutineName)
         sharedPreferences = getSharedPreferences(SHARED_PREFS_KEY, Context.MODE_PRIVATE)
 
@@ -69,15 +72,7 @@ class CreateRoutine : AppCompatActivity() {
     private fun getNotificationsSharedPreferences() {
         val notificationText = sharedPreferences.getString("NotificationPrefs", null)
         if (notificationText != null) {
-            val actionRowLayout = layoutInflater.inflate(R.layout.action_row, null)
-            actionRowLayout.findViewById<TextView>(R.id.tv_AddNotification).text =
-                "Send Notification: $notificationText"
-            val container = findViewById<ViewGroup>(R.id.actionsTVContainer)
-            val actionsTV = findViewById<TextView>(R.id.actionsTV)
-            val index = container.indexOfChild(actionsTV)
-            container.removeView(actionsTV)
-            container.addView(actionRowLayout, index)
-            actionRowLayout.id = R.id.actionsTV
+            updateActionRowLayout(notificationText)
         }
     }
 
@@ -89,14 +84,7 @@ class CreateRoutine : AppCompatActivity() {
     private fun getTimeSharedPreferences() {
         val timeText = sharedPreferences.getString("TimePrefs", null)
         if (timeText != null) {
-            val eventRowLayout = layoutInflater.inflate(R.layout.event_row, null)
-            val selectedTimeTVContainer = findViewById<ViewGroup>(R.id.selectedTimeTVContainer)
-            val selectedTimeTV = findViewById<TextView>(R.id.selectedTimeTV)
-            val index = selectedTimeTVContainer.indexOfChild(selectedTimeTV)
-            selectedTimeTVContainer.removeView(selectedTimeTV)
-            selectedTimeTVContainer.addView(eventRowLayout, index)
-            eventRowLayout.id = R.id.selectedTimeTV
-            findViewById<TextView>(R.id.tv_AddTime).text = "The time is $timeText"
+            updateEventRow(timeText)
         }
 
     }
@@ -122,24 +110,7 @@ class CreateRoutine : AppCompatActivity() {
                 val amPmText = if (amPm == Calendar.AM) "AM" else "PM"
                 val timeText = "$hourText:$minuteText $amPmText"
 
-                // Inflate the LinearLayout resource file
-                val eventRowLayout = layoutInflater.inflate(R.layout.event_row, null)
-
-
-                // Replace the TextView with id @+id/selectedTimeTV with the inflated LinearLayout
-                val selectedTimeTVContainer = findViewById<ViewGroup>(R.id.selectedTimeTVContainer)
-                val selectedTimeTV = findViewById<TextView>(R.id.selectedTimeTV)
-
-                val index = selectedTimeTVContainer.indexOfChild(selectedTimeTV)
-                selectedTimeTVContainer.removeView(selectedTimeTV)
-                selectedTimeTVContainer.addView(eventRowLayout, index)
-
-                eventRowLayout.id =
-                    R.id.selectedTimeTV // Set the ID of the inflated LinearLayout to the ID of the TextView that was removed
-
-                // Change the text in the text view with id @+id/tv_AddTime
-                findViewById<TextView>(R.id.tv_AddTime).text = "The time is $timeText"
-
+                updateEventRow(timeText)
 
                 // save the value to shared preferences
                 val editor = sharedPreferences.edit()
@@ -153,6 +124,15 @@ class CreateRoutine : AppCompatActivity() {
         timePickerDialog.show()
     }
 
+    private fun updateEventRow(timeText: String) {
+        val eventRowLayout  = findViewById<LinearLayout>(R.id.event_row_layout)
+        eventRowLayout.visibility = View.VISIBLE
+        val selectedTimeTV = findViewById<TextView>(R.id.selectedTimeTV)
+        selectedTimeTV.visibility = View.GONE
+        // Change the text in the text view with id @+id/tv_AddTime
+        findViewById<TextView>(R.id.tv_AddTime).text = "The time is $timeText"
+    }
+
 
     private fun addEvent() {
         sharedPreferences.edit().putString("routineName", routineNameET.text.toString()).apply()
@@ -161,6 +141,7 @@ class CreateRoutine : AppCompatActivity() {
     }
 
     private fun addAction() {
+        sharedPreferences.edit().putString("routineName", routineNameET.text.toString()).apply()
         val intent = Intent(this, SelectThing::class.java)
         startActivity(intent)
     }
@@ -178,23 +159,12 @@ class CreateRoutine : AppCompatActivity() {
             dialog.dismiss()
             val inputText = input.text.toString()
 
-            val actionRowLayout = layoutInflater.inflate(R.layout.action_row, null)
-            actionRowLayout.findViewById<TextView>(R.id.tv_AddNotification).text =
-                "Send Notification: $inputText"
-            val container = findViewById<ViewGroup>(R.id.actionsTVContainer)
-            val actionsTV = findViewById<TextView>(R.id.actionsTV)
-            val index = container.indexOfChild(actionsTV)
-            container.removeView(actionsTV)
-            container.addView(actionRowLayout, index)
-            actionRowLayout.id = R.id.actionsTV
-
+            updateActionRowLayout(inputText)
 
             // save the value to shared preferences
             val editor = sharedPreferences.edit()
             editor.putString("NotificationPrefs", inputText)
             editor.apply()
-//            container.removeAllViews()
-//            container.addView(actionRowLayout)
 
             showProcessingDialog(input.text.toString())
 
@@ -205,6 +175,16 @@ class CreateRoutine : AppCompatActivity() {
         }
 
         builder.show()
+    }
+
+    private fun updateActionRowLayout(inputText: String) {
+        val actionRowLayout  = findViewById<LinearLayout>(R.id.action_row_layout)
+        actionRowLayout.visibility = View.VISIBLE
+        val actionsTV = findViewById<TextView>(R.id.actionsTV)
+        actionsTV.visibility = View.GONE
+
+        // Change the text in the text view with id @+id/tv_AddNotification
+        actionRowLayout.findViewById<TextView>(R.id.tv_AddNotification).text = "Send Notification: $inputText"
     }
 
     private fun showProcessingDialog(value: String) {
@@ -250,5 +230,21 @@ class CreateRoutine : AppCompatActivity() {
         } else {
             Toast.makeText(applicationContext, "Error creating routine", Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun oldUpdateRowCode(){
+                // Inflate the LinearLayout resource file
+                val eventRowLayout = layoutInflater.inflate(R.layout.event_row, null)
+
+                // Replace the TextView with id @+id/selectedTimeTV with the inflated LinearLayout
+                val selectedTimeTVContainer = findViewById<ViewGroup>(R.id.selectedTimeTVContainer)
+                val selectedTimeTV = findViewById<TextView>(R.id.selectedTimeTV)
+
+                val index = selectedTimeTVContainer.indexOfChild(selectedTimeTV)
+                selectedTimeTVContainer.removeView(selectedTimeTV)
+                selectedTimeTVContainer.addView(eventRowLayout, index)
+
+                // Change the text in the text view with id @+id/tv_AddTime
+                //findViewById<TextView>(R.id.tv_AddTime).text = "The time is $timeText"
     }
 }

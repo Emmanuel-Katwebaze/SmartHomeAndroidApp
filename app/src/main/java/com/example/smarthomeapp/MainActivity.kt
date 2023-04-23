@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         replaceFragment(favoritesFragment)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
+        bottomNavigationView.selectedItemId = R.id.favorites_navBtn;
 
         val selectedFragment = intent.getStringExtra("SELECTED_FRAGMENT")
         if (selectedFragment == "routines") {
@@ -37,8 +38,6 @@ class MainActivity : AppCompatActivity() {
             replaceFragment(favoritesFragment)
         }
 
-
-        bottomNavigationView.selectedItemId = R.id.favorites_navBtn;
 
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -70,11 +69,11 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun replaceFragment(fragment: Fragment){
-       if(fragment != null){
-           val transaction = supportFragmentManager.beginTransaction()
-           transaction.replace(R.id.fragment_container, fragment)
-           transaction.commit()
-       }
-   }
+    private fun replaceFragment(fragment: Fragment) {
+        if (fragment != null) {
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, fragment)
+            transaction.commit()
+        }
+    }
 }

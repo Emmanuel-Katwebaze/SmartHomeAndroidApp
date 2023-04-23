@@ -10,30 +10,29 @@
 
     <include
         android:id="@+id/create_routine_toolbar"
-        layout="@layout/create_routine_appbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        layout="@layout/create_routine_appbar" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/etRoutineName"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="25dp"
-            android:backgroundTint="@android:color/tertiary_text_dark"
-            android:backgroundTintMode="screen"
-            android:ems="13"
+            android:layout_marginHorizontal="20dp"
             android:hint="Routine Name"
-            android:inputType="text"
-            android:textColorHint="@android:color/darker_gray"
-            android:textSize="25sp"
-            android:tooltipText="Routine Name" />
+            android:textColorHighlight="@android:color/black">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etRoutineName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#F1F3F4"
+                android:ems="15"
+                android:textSize="25sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -52,7 +51,13 @@
         <LinearLayout
             android:id="@+id/selectedTimeTVContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/event_row_layout"
+                layout="@layout/event_row"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/selectedTimeTV"
@@ -104,7 +109,13 @@
         <LinearLayout
             android:id="@+id/actionsTVContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/action_row_layout"
+                layout="@layout/action_row"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/actionsTV"
