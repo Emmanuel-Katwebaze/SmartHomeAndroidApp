@@ -70,6 +70,17 @@ class CreateRoutine : AppCompatActivity() {
 
     }
 
+
+    private fun addConditionViews() {
+        val addConditionLayout = findViewById<TextView>(R.id.addConditionLayout)
+        addConditionLayout.visibility = View.VISIBLE
+        val addEventLayout = findViewById<TextView>(R.id.addEventLayout)
+        addEventLayout.visibility = View.GONE
+
+        val addConditionFABLayout = findViewById<LinearLayout>(R.id.addConditionFABLayout)
+        addConditionFABLayout.visibility = View.VISIBLE
+    }
+
     private fun getNotificationsSharedPreferences() {
         val notificationText = sharedPreferences.getString("NotificationPrefs", null)
         if (notificationText != null) {
@@ -86,6 +97,7 @@ class CreateRoutine : AppCompatActivity() {
         val timeText = sharedPreferences.getString("TimePrefs", null)
         if (timeText != null) {
             updateEventRow(timeText)
+            addConditionViews()
         }
 
     }
@@ -112,12 +124,12 @@ class CreateRoutine : AppCompatActivity() {
                 val timeText = "$hourText:$minuteText $amPmText"
 
                 updateEventRow(timeText)
+                addConditionViews()
 
                 // save the value to shared preferences
                 val editor = sharedPreferences.edit()
                 editor.putString("TimePrefs", timeText)
                 editor.apply()
-
 
             }, hour, minute, false
         )
