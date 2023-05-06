@@ -4,11 +4,12 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.text.Editable
-import android.text.TextWatcher
+import android.text.*
+import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -125,12 +126,33 @@ class CreateRoutine : AppCompatActivity() {
     }
 
     private fun updateEventRow(timeText: String) {
-        val eventRowLayout  = findViewById<LinearLayout>(R.id.event_row_layout)
+        val eventRowLayout = findViewById<LinearLayout>(R.id.event_row_layout)
         eventRowLayout.visibility = View.VISIBLE
         val selectedTimeTV = findViewById<TextView>(R.id.selectedTimeTV)
         selectedTimeTV.visibility = View.GONE
+
+        val boldTimeText = formatText(timeText)
+
+        // Construct the string with boldTimeText and regular text
+        val timeText = SpannableStringBuilder()
+        timeText.append("The time is ")
+        timeText.append(boldTimeText)
+
         // Change the text in the text view with id @+id/tv_AddTime
-        findViewById<TextView>(R.id.tv_AddTime).text = "The time is $timeText"
+        findViewById<TextView>(R.id.tv_AddTime).text = timeText
+    }
+
+    private fun formatText(text: String): CharSequence {
+        // Create a new SpannableString with the time text in bold
+        val spannableText = SpannableString(text)
+        spannableText.setSpan(
+            StyleSpan(Typeface.BOLD),
+            0,
+            text.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        return spannableText
     }
 
 
@@ -178,13 +200,21 @@ class CreateRoutine : AppCompatActivity() {
     }
 
     private fun updateActionRowLayout(inputText: String) {
-        val actionRowLayout  = findViewById<LinearLayout>(R.id.action_row_layout)
+        val actionRowLayout = findViewById<LinearLayout>(R.id.action_row_layout)
         actionRowLayout.visibility = View.VISIBLE
         val actionsTV = findViewById<TextView>(R.id.actionsTV)
         actionsTV.visibility = View.GONE
 
+        val boldNotificationText = formatText(inputText)
+
+        // Construct the string with boldTimeText and regular text
+        val notificationText = SpannableStringBuilder()
+        notificationText.append("Send Notification: ")
+        notificationText.append(boldNotificationText)
+
+
         // Change the text in the text view with id @+id/tv_AddNotification
-        actionRowLayout.findViewById<TextView>(R.id.tv_AddNotification).text = "Send Notification: $inputText"
+        actionRowLayout.findViewById<TextView>(R.id.tv_AddNotification).text = notificationText
     }
 
     private fun showProcessingDialog(value: String) {
@@ -232,19 +262,19 @@ class CreateRoutine : AppCompatActivity() {
         }
     }
 
-    private fun oldUpdateRowCode(){
-                // Inflate the LinearLayout resource file
-                val eventRowLayout = layoutInflater.inflate(R.layout.event_row, null)
+    private fun oldUpdateRowCode() {
+        // Inflate the LinearLayout resource file
+        val eventRowLayout = layoutInflater.inflate(R.layout.event_row, null)
 
-                // Replace the TextView with id @+id/selectedTimeTV with the inflated LinearLayout
-                val selectedTimeTVContainer = findViewById<ViewGroup>(R.id.selectedTimeTVContainer)
-                val selectedTimeTV = findViewById<TextView>(R.id.selectedTimeTV)
+        // Replace the TextView with id @+id/selectedTimeTV with the inflated LinearLayout
+        val selectedTimeTVContainer = findViewById<ViewGroup>(R.id.selectedTimeTVContainer)
+        val selectedTimeTV = findViewById<TextView>(R.id.selectedTimeTV)
 
-                val index = selectedTimeTVContainer.indexOfChild(selectedTimeTV)
-                selectedTimeTVContainer.removeView(selectedTimeTV)
-                selectedTimeTVContainer.addView(eventRowLayout, index)
+        val index = selectedTimeTVContainer.indexOfChild(selectedTimeTV)
+        selectedTimeTVContainer.removeView(selectedTimeTV)
+        selectedTimeTVContainer.addView(eventRowLayout, index)
 
-                // Change the text in the text view with id @+id/tv_AddTime
-                //findViewById<TextView>(R.id.tv_AddTime).text = "The time is $timeText"
+        // Change the text in the text view with id @+id/tv_AddTime
+        //findViewById<TextView>(R.id.tv_AddTime).text = "The time is $timeText"
     }
 }
