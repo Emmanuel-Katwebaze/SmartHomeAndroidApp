@@ -2,18 +2,14 @@ package com.example.smarthomeapp.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.viewpager.widget.ViewPager
-import com.example.smarthomeapp.Adapter.MyAdapter
+import android.widget.TextView
+import com.example.smarthomeapp.CreateRoutine
 import com.example.smarthomeapp.R
-import com.example.smarthomeapp.SelectAction
-import com.example.smarthomeapp.SelectRoutine
-import com.google.android.material.tabs.TabLayout
 
 
 class SelectThingsFragment : Fragment() {
@@ -31,18 +27,34 @@ class SelectThingsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_select_things, container, false)
 
         val addNotificationLayout = view?.findViewById<LinearLayout>(R.id.add_notification)
+        val tvNotificationsText = view?.findViewById<TextView>(R.id.tvNotificationsText)
+
+        val abSelectThing = activity?.findViewById<View>(R.id.abSelectThing)
+        val abSelectAction = activity?.findViewById<View>(R.id.abSelectAction)
 
         // Handle click events for the add notification layout
         addNotificationLayout?.setOnClickListener {
-            val intent = Intent(activity, SelectAction::class.java)
+            addNotificationLayout?.visibility = View.GONE
+            abSelectThing?.visibility = View.GONE
+
+            tvNotificationsText?.visibility = View.VISIBLE
+            abSelectAction?.visibility = View.VISIBLE
+
+        }
+
+
+        tvNotificationsText?.setOnClickListener {
+            val intent = Intent(requireContext(), CreateRoutine::class.java)
+            intent.putExtra("notificationCreated", true)
             startActivity(intent)
         }
 
-        return view;
+
+        return view
     }
 
-    private fun replaceFragment(fragment: Fragment){
-        if(fragment != null){
+    private fun replaceFragment(fragment: Fragment) {
+        if (fragment != null) {
             val transaction = childFragmentManager.beginTransaction()
             transaction.replace(R.id.viewPager, fragment)
             transaction.addToBackStack(null)

@@ -8,7 +8,6 @@
     tools:context=".SelectAction">
 
     <include
-        android:id="@+id/abActionThings"
         layout="@layout/select_action_appbar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.example.smarthomeapp.fragments.SelectRoutineFragment
 import com.example.smarthomeapp.fragments.SelectSceneFragment
 import com.example.smarthomeapp.fragments.SelectThingsFragment
-import com.example.smarthomeapp.fragments.SelectThingsNotificationsFragment
 
 internal class MyAdapter(var context: Context, fm: FragmentManager, var totalTabs: Int) :
     FragmentPagerAdapter(fm) {
@@ -23,9 +22,6 @@ internal class MyAdapter(var context: Context, fm: FragmentManager, var totalTab
             }
             2 -> {
                 SelectRoutineFragment()
-            }
-            3 -> {
-                SelectThingsNotificationsFragment()
             }
             else -> getItem(position)
         }
