@@ -2,16 +2,13 @@ package com.example.smarthomeapp
 
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.example.smarthomeapp.fragments.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -76,4 +73,6 @@ class MainActivity : AppCompatActivity() {
             transaction.commit()
         }
     }
+
+
 }

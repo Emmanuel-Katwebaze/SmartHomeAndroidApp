@@ -9,10 +9,16 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.smarthomeapp.MainActivity
 import com.example.smarthomeapp.Models.RoutineModel
 import com.example.smarthomeapp.R
+import com.example.smarthomeapp.fragments.RoutinesFragment
 
-class RoutineItemAdapter(val context: Context, val items: ArrayList<RoutineModel>) : RecyclerView.Adapter<RoutineItemAdapter.ViewHolder>(){
+class RoutineItemAdapter(
+    val context: Context,
+    val items: ArrayList<RoutineModel>,
+    val fragment: RoutinesFragment
+) : RecyclerView.Adapter<RoutineItemAdapter.ViewHolder>() {
 
     /**
      * Inflates the item views which is designed in the XML layout file
@@ -60,6 +66,11 @@ class RoutineItemAdapter(val context: Context, val items: ArrayList<RoutineModel
 //        } else {
 //            holder.llMain.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
 //        }
+
+        holder.llMain.setOnClickListener { view ->
+            fragment.updateRecordDialog(item)
+        }
+
     }
 
     //Gets the number of items in the list

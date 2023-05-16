@@ -12,8 +12,8 @@
     <color name="amber">#FFC107</color>
     <color name="amber_dark">#FFA000</color>
     <color name="north_sea">#0080A9</color>
-    <color name="yellow">#FFEB3B</color>
-    <color name="yellow_variant">#FBC02D</color>
+    <color name="yellow">#FFF700</color>
+    <color name="yellow_variant">#FFF44F</color>
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>
     <color name="light_blue_A200">#FF40C4FF</color>

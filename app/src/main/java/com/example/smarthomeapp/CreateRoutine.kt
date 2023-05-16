@@ -1,30 +1,30 @@
 package com.example.smarthomeapp
 
-import android.app.TimePickerDialog
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Typeface
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.text.*
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.Toolbar
 import com.example.smarthomeapp.Database.DatabaseHandler
 import com.example.smarthomeapp.Models.RoutineModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
+import java.text.SimpleDateFormat
 import java.util.*
 
 
 class CreateRoutine : AppCompatActivity() {
-    //private lateinit var actionRowLayout: LinearLayout
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var routineNameET: TextInputEditText
     private val SHARED_PREFS_KEY = "MySharedPreferences"
@@ -66,6 +66,8 @@ class CreateRoutine : AppCompatActivity() {
             showTimePickerDialog()
             intent.putExtra("timeSet", false) // set timeSet value to false
         }
+
+        createNotificationChannel()
 
 
     }
@@ -259,11 +261,27 @@ class CreateRoutine : AppCompatActivity() {
 
     private fun addRoutineRecord() {
         val routine = sharedPreferences.getString("routineName", null)
+        val time = sharedPreferences.getString("TimePrefs", null)
+        val notification = sharedPreferences.getString("NotificationPrefs", null)
+
         val databaseHandler: DatabaseHandler = DatabaseHandler(this)
-        if (routine?.isNotEmpty() == true) {
-            val status = databaseHandler.addRoutine(RoutineModel(0, routine, "Never"))
+        if (routine?.isNotEmpty() == true || time?.isNotEmpty() == true || notification?.isNotEmpty() == true) {
+
+//            val status = databaseHandler.addRoutine(RoutineModel(0, routine, time, notification, "Current", "Never"))
+            val status = databaseHandler.addRoutine(
+                RoutineModel(
+                    0,
+                    routine.toString(),
+                    time.toString(),
+                    notification.toString(),
+                    "Current",
+                    "Never"
+                )
+            )
+
             if (status > -1) {
                 Toast.makeText(applicationContext, "Record saved", Toast.LENGTH_LONG).show()
+                scheduleNotification()
                 sharedPreferences.edit().clear().apply()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.putExtra("SELECTED_FRAGMENT", "routines")
@@ -274,19 +292,88 @@ class CreateRoutine : AppCompatActivity() {
         }
     }
 
-    private fun oldUpdateRowCode() {
-        // Inflate the LinearLayout resource file
-        val eventRowLayout = layoutInflater.inflate(R.layout.event_row, null)
 
-        // Replace the TextView with id @+id/selectedTimeTV with the inflated LinearLayout
-        val selectedTimeTVContainer = findViewById<ViewGroup>(R.id.selectedTimeTVContainer)
-        val selectedTimeTV = findViewById<TextView>(R.id.selectedTimeTV)
+    private fun scheduleNotification()
+    {
+        val intent = Intent(applicationContext, Notification::class.java)
+        val routine = sharedPreferences.getString("routineName", null).toString()
+        val notification = sharedPreferences.getString("NotificationPrefs", null).toString()
+        intent.putExtra("routineExtra", routine)
+        intent.putExtra("notificationExtra", notification)
 
-        val index = selectedTimeTVContainer.indexOfChild(selectedTimeTV)
-        selectedTimeTVContainer.removeView(selectedTimeTV)
-        selectedTimeTVContainer.addView(eventRowLayout, index)
+        val notificationId = 1 // Unique identifier for the pending intent
 
-        // Change the text in the text view with id @+id/tv_AddTime
-        //findViewById<TextView>(R.id.tv_AddTime).text = "The time is $timeText"
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            notificationId,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val time = getTime()
+
+        Log.i("Time", time.toString())
+
+        // Use setExact instead of setExactAndAllowWhileIdle
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                time,
+                pendingIntent
+            )
+        } else {
+            alarmManager.set(
+                AlarmManager.RTC_WAKEUP,
+                time,
+                pendingIntent
+            )
+        }
+
+        showAlert(time, routine, notification)
     }
+
+    private fun showAlert(time: Long, routine: String, notification: String)
+    {
+        val date = Date(time)
+        val dateFormat = android.text.format.DateFormat.getLongDateFormat(applicationContext)
+        val timeFormat = android.text.format.DateFormat.getTimeFormat(applicationContext)
+
+        AlertDialog.Builder(this)
+            .setTitle("Notification Scheduled")
+            .setMessage(
+                "Title: " + routine +
+                        "\nMessage: " + notification +
+                        "\nAt: " + dateFormat.format(date) + " " + timeFormat.format(date))
+            .setPositiveButton("Okay"){_,_ ->}
+            .show()
+    }
+
+    fun getTime(): Long {
+        val timeString = sharedPreferences.getString("TimePrefs", null).toString()
+        val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+        val date = dateFormat.parse(timeString)
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        return calendar.timeInMillis
+    }
+
+
+    private fun createNotificationChannel()
+    {
+        val name = "Notif Channel"
+        val desc = "A Description of the Channel"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel("channel1", name, importance)
+            channel.description = desc
+
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+        }
+
+    }
+
 }
