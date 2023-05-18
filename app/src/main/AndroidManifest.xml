@@ -4,6 +4,10 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,26 +17,37 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartHomeApp"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/my_map_api_key" />
+
+        <activity
+            android:name=".GoogleMaps"
+            android:exported="false"
+            android:label="@string/title_activity_google_maps" />
+
         <receiver
             android:name=".Notification"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
+
         <activity
             android:name=".SelectThing"
             android:exported="true"
-            android:parentActivityName=".CreateRoutine"/>
+            android:parentActivityName=".CreateRoutine" />
         <activity
             android:name=".SelectEvent"
             android:exported="true"
-            android:parentActivityName=".CreateRoutine"/>
+            android:parentActivityName=".CreateRoutine" />
         <activity
             android:name=".CreateRoutine"
             android:exported="true"
-            android:parentActivityName=".SelectRoutine"/>
+            android:parentActivityName=".SelectRoutine" />
         <activity
             android:name=".SelectRoutine"
             android:exported="true"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

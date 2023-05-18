@@ -38,6 +38,12 @@ class CreateRoutine : AppCompatActivity() {
             finish()
         }
 
+        val save: AppCompatImageView = findViewById(R.id.save_button)
+
+        save.setOnClickListener {
+            addRoutineRecord()
+        }
+
         val addActionButton = findViewById<FloatingActionButton>(R.id.AddActionFAB)
         val addEventButton = findViewById<FloatingActionButton>(R.id.AddEventFAB)
 
@@ -72,6 +78,23 @@ class CreateRoutine : AppCompatActivity() {
 
     }
 
+    private fun getLocationSharedPreferences() {
+        val location = sharedPreferences.getString("LocationPrefs", null)
+        if (location != null) {
+            updateLocationRowLayout(location)
+        }
+    }
+
+    private fun updateLocationRowLayout(location: String) {
+        val locationTitle = findViewById<TextView>(R.id.location_title)
+        locationTitle.visibility = View.VISIBLE
+        val locationRowLayout = findViewById<LinearLayout>(R.id.location_row_layout)
+        locationRowLayout.visibility = View.VISIBLE
+
+        // Change the text in the text view with id @+id/tv_AddLocation
+        findViewById<TextView>(R.id.tv_AddLocation).text = location
+    }
+
 
     private fun addConditionViews() {
         val addConditionLayout = findViewById<TextView>(R.id.addConditionLayout)
@@ -99,6 +122,7 @@ class CreateRoutine : AppCompatActivity() {
         val timeText = sharedPreferences.getString("TimePrefs", null)
         if (timeText != null) {
             updateEventRow(timeText)
+            getLocationSharedPreferences()
             addConditionViews()
         }
 
@@ -250,8 +274,6 @@ class CreateRoutine : AppCompatActivity() {
         val dialog = builder.create()
         dialog.show()
 
-        addRoutineRecord()
-
         Handler().postDelayed({
 
             dialog.dismiss()
@@ -263,9 +285,10 @@ class CreateRoutine : AppCompatActivity() {
         val routine = sharedPreferences.getString("routineName", null)
         val time = sharedPreferences.getString("TimePrefs", null)
         val notification = sharedPreferences.getString("NotificationPrefs", null)
+        val location = sharedPreferences.getString("LocationPrefs", null) ?: "None"
 
         val databaseHandler: DatabaseHandler = DatabaseHandler(this)
-        if (routine?.isNotEmpty() == true || time?.isNotEmpty() == true || notification?.isNotEmpty() == true) {
+        if (routine?.isNotEmpty() == true && time?.isNotEmpty() == true && notification?.isNotEmpty() == true) {
 
 //            val status = databaseHandler.addRoutine(RoutineModel(0, routine, time, notification, "Current", "Never"))
             val status = databaseHandler.addRoutine(
@@ -274,13 +297,13 @@ class CreateRoutine : AppCompatActivity() {
                     routine.toString(),
                     time.toString(),
                     notification.toString(),
-                    "Current",
+                    location,
                     "Never"
                 )
             )
 
             if (status > -1) {
-                Toast.makeText(applicationContext, "Record saved", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "Routine saved", Toast.LENGTH_LONG).show()
                 scheduleNotification()
                 sharedPreferences.edit().clear().apply()
                 val intent = Intent(this, MainActivity::class.java)
@@ -314,22 +337,42 @@ class CreateRoutine : AppCompatActivity() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val time = getTime()
 
-        Log.i("Time", time.toString())
+        val timeInMillis = time
+
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = timeInMillis
+
+        val hourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        val formattedTime = String.format("%02d:%02d", hourOfDay, minute)
+        val formattedTime12Hour = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(calendar.time)
+
+        Log.i("Time24", formattedTime)
+        Log.i("Time12", formattedTime12Hour)
 
         // Use setExact instead of setExactAndAllowWhileIdle
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP,
-                time,
-                pendingIntent
-            )
-        } else {
-            alarmManager.set(
-                AlarmManager.RTC_WAKEUP,
-                time,
-                pendingIntent
-            )
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            alarmManager.setExact(
+//                AlarmManager.RTC_WAKEUP,
+//                calendar.timeInMillis,
+//                pendingIntent
+//            )
+//        } else {
+//            alarmManager.set(
+//                AlarmManager.RTC_WAKEUP,
+//                calendar.timeInMillis,
+//                pendingIntent
+//            )
+//        }
+        // Use setRepeating instead of setExact or set
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent
+        )
+
 
         showAlert(time, routine, notification)
     }
@@ -362,9 +405,9 @@ class CreateRoutine : AppCompatActivity() {
 
     private fun createNotificationChannel()
     {
-        val name = "Notif Channel"
-        val desc = "A Description of the Channel"
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val name = "SmartHaven Channel"
+        val desc = "Reminder notifications for day to day activities"
+        val importance = NotificationManager.IMPORTANCE_HIGH
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel("channel1", name, importance)

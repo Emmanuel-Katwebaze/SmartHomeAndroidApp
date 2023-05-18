@@ -65,6 +65,22 @@
                     android:visibility="gone" />
 
                 <TextView
+                    android:id="@+id/location_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="20dp"
+                    android:paddingLeft="20dp"
+                    android:text="Location"
+                    android:textSize="25sp"
+                    android:visibility="gone"/>
+
+
+                <include
+                    android:id="@+id/location_row_layout"
+                    layout="@layout/location_row"
+                    android:visibility="gone" />
+
+                <TextView
                     android:id="@+id/selectedTimeTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
