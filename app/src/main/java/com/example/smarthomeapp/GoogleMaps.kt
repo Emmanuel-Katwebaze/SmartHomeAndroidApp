@@ -137,8 +137,9 @@ class GoogleMaps : AppCompatActivity(), OnMapReadyCallback {
 
                 val locationName = address.getAddressLine(0)
                 locationTextView.text = locationName
-            } else {
-                Toast.makeText(applicationContext, "Location not Found", Toast.LENGTH_LONG).show()
+            }
+            else {
+                Toast.makeText(applicationContext, "Loading", Toast.LENGTH_LONG).show()
             }
         } else {
             // Clear the map and text views when the location is empty

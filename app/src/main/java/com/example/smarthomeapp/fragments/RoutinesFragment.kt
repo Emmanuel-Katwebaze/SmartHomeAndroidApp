@@ -194,7 +194,7 @@ class RoutinesFragment : Fragment() {
                 }
             } else {
                 Toast.makeText(
-                    requireContext(), "Error updating record", Toast.LENGTH_LONG
+                    requireContext(), "Error updating routine", Toast.LENGTH_LONG
                 ).show()
             }
         })
@@ -212,11 +212,11 @@ class RoutinesFragment : Fragment() {
 
                 setupListofDataIntoRecyclerView()
                 updateDialog?.dismiss()
+            }else{
+                Toast.makeText(
+                    requireContext(), "Error deleting record", Toast.LENGTH_LONG
+                ).show()
             }
-
-            Toast.makeText(
-                requireContext(), "Error deleting record", Toast.LENGTH_LONG
-            ).show()
         }
 
         tvCancel?.setOnClickListener(View.OnClickListener {

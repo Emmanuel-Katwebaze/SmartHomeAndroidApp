@@ -50,15 +50,21 @@
             android:layout_margin="10dp"
             android:text="Create a new Routine"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textStyle="bold"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            android:textStyle="bold" />
     </LinearLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvSelectRoutinesList"
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        tools:visibility="gone"/>
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSelectRoutinesList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            tools:visibility="gone" />
+    </ScrollView>
 
 
 </LinearLayout>

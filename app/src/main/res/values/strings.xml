@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SmartHomeApp</string>
+    <string name="app_name">SmartHaven</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="dummy_button">Dummy Button</string>
