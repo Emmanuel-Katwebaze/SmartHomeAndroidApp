@@ -4,19 +4,17 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smarthomeapp.Models.RoutineModel
 import com.example.smarthomeapp.R
 import com.example.smarthomeapp.SelectRoutine
-import com.example.smarthomeapp.fragments.RoutinesFragment
+import com.example.smarthomeapp.fragments.FavoritesFragment
 
 
-class SelectRoutineAdapter(val context: Context, val items: ArrayList<RoutineModel>, val activity: SelectRoutine) :
-    RecyclerView.Adapter<SelectRoutineAdapter.ViewHolder>() {
+class FavoritesAdapter(val context: Context, val items: ArrayList<RoutineModel>, val fragment: FavoritesFragment) :
+    RecyclerView.Adapter<FavoritesAdapter.ViewHolder>() {
 
     /**
      * Inflates the item views which is designed in the XML layout file
@@ -31,7 +29,7 @@ class SelectRoutineAdapter(val context: Context, val items: ArrayList<RoutineMod
     ): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(context).inflate(
-                R.layout.select_routine_row,
+                R.layout.favorite_routine_row,
                 parent,
                 false
             )
@@ -51,10 +49,10 @@ class SelectRoutineAdapter(val context: Context, val items: ArrayList<RoutineMod
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items.get(position)
-        holder.tv_selectRoutineRoutineName.text = item.routineName
+        holder.tv_favoriteRoutineName.text = item.routineName
 
         holder.llMain.setOnClickListener { view ->
-            activity.addToFavorites(item)
+            fragment.deleteFromFavorites(item)
         }
 
     }
@@ -70,8 +68,8 @@ class SelectRoutineAdapter(val context: Context, val items: ArrayList<RoutineMod
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         // Holds the TextView that will add each item to
-        val llMain = view.findViewById<LinearLayout>(R.id.select_routine_row)
-        val tv_selectRoutineRoutineName =
-            view.findViewById<TextView>(R.id.tv_selectRoutineRoutineName)
+        val llMain = view.findViewById<LinearLayout>(R.id.favorite_routine_row)
+        val tv_favoriteRoutineName =
+            view.findViewById<TextView>(R.id.tv_favoriteRoutineName)
     }
 }

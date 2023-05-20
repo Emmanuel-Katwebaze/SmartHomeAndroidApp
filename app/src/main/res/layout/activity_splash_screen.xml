@@ -4,29 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
     tools:context=".SplashScreen">
+
     <TextView
         android:id="@+id/smartHavenTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SmartHaven"
-        android:textColor="@color/yellow"
-        android:textAppearance="@style/CustomTextItems"
-        android:textSize="70sp"
+        android:layout_centerInParent="true"
         android:gravity="center"
-        android:layout_centerInParent="true"/>
+        android:text="SmartHaven"
+        android:textAppearance="@style/CustomTextItems"
+        android:textColor="@color/yellow"
+        android:textSize="70sp" />
+
     <TextView
         android:id="@+id/subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/smartHavenTitle"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
         android:text="your smart home solution"
         android:textAppearance="@style/CustomTextItems"
         android:textColor="@color/yellow"
-        android:layout_marginTop="10dp"
-        android:textSize="25sp"
-        android:gravity="center"
-        android:layout_centerInParent="true"
-        android:layout_below="@+id/smartHavenTitle"/>
+        android:textSize="25sp" />
 
 </RelativeLayout>

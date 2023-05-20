@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
 import com.example.smarthomeapp.Database.DatabaseHandler
 import com.example.smarthomeapp.Models.RoutineModel
+import com.example.smarthomeapp.Notification.Companion.NOTIFICATION_CHANNEL_ID
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import java.text.SimpleDateFormat
@@ -73,7 +74,7 @@ class CreateRoutine : AppCompatActivity() {
             intent.putExtra("timeSet", false) // set timeSet value to false
         }
 
-        createNotificationChannel()
+
 
 
     }
@@ -309,9 +310,10 @@ class CreateRoutine : AppCompatActivity() {
                 val intent = Intent(this, MainActivity::class.java)
                 intent.putExtra("SELECTED_FRAGMENT", "routines")
                 startActivity(intent)
+                finish()
             }
         } else {
-            Toast.makeText(applicationContext, "Error creating routine", Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "Routine, Event or Action Cannot be Empty", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -321,10 +323,15 @@ class CreateRoutine : AppCompatActivity() {
         val intent = Intent(applicationContext, Notification::class.java)
         val routine = sharedPreferences.getString("routineName", null).toString()
         val notification = sharedPreferences.getString("NotificationPrefs", null).toString()
+        val location = sharedPreferences.getString("LocationPrefs", null)
         intent.putExtra("routineExtra", routine)
         intent.putExtra("notificationExtra", notification)
+        intent.putExtra("locationExtra", location)
 
-        val notificationId = 1 // Unique identifier for the pending intent
+
+        val databaseHandler: DatabaseHandler = DatabaseHandler(this)
+        val notificationId = databaseHandler.getLastInsertedId() // Unique identifier for the pending intent
+        intent.putExtra("notificationId", notificationId)
 
         val pendingIntent = PendingIntent.getBroadcast(
             applicationContext,
@@ -339,17 +346,23 @@ class CreateRoutine : AppCompatActivity() {
 
         val timeInMillis = time
 
+
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = timeInMillis
+
+        // Use setRepeating instead of setExact or set
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent
+        )
 
         val hourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
 
         val formattedTime = String.format("%02d:%02d", hourOfDay, minute)
         val formattedTime12Hour = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(calendar.time)
-
-        Log.i("Time24", formattedTime)
-        Log.i("Time12", formattedTime12Hour)
 
         // Use setExact instead of setExactAndAllowWhileIdle
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -365,33 +378,30 @@ class CreateRoutine : AppCompatActivity() {
 //                pendingIntent
 //            )
 //        }
-        // Use setRepeating instead of setExact or set
-        alarmManager.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
-        )
+
 
 
         showAlert(time, routine, notification)
     }
 
-    private fun showAlert(time: Long, routine: String, notification: String)
-    {
-        val date = Date(time)
-        val dateFormat = android.text.format.DateFormat.getLongDateFormat(applicationContext)
-        val timeFormat = android.text.format.DateFormat.getTimeFormat(applicationContext)
+    private fun showAlert(time: Long, routine: String, notification: String) {
+        if (!isFinishing) {
+            val date = Date(time)
+            val dateFormat = android.text.format.DateFormat.getLongDateFormat(applicationContext)
+            val timeFormat = android.text.format.DateFormat.getTimeFormat(applicationContext)
 
-        AlertDialog.Builder(this)
-            .setTitle("Notification Scheduled")
-            .setMessage(
-                "Title: " + routine +
-                        "\nMessage: " + notification +
-                        "\nAt: " + dateFormat.format(date) + " " + timeFormat.format(date))
-            .setPositiveButton("Okay"){_,_ ->}
-            .show()
+            AlertDialog.Builder(this)
+                .setTitle("Notification Scheduled")
+                .setMessage(
+                    "Title: $routine" +
+                            "\nMessage: $notification" +
+                            "\nAt: ${timeFormat.format(date)}"
+                )
+                .setPositiveButton("Okay") { _, _ -> }
+                .show()
+        }
     }
+
 
     fun getTime(): Long {
         val timeString = sharedPreferences.getString("TimePrefs", null).toString()
@@ -402,21 +412,5 @@ class CreateRoutine : AppCompatActivity() {
         return calendar.timeInMillis
     }
 
-
-    private fun createNotificationChannel()
-    {
-        val name = "SmartHaven Channel"
-        val desc = "Reminder notifications for day to day activities"
-        val importance = NotificationManager.IMPORTANCE_HIGH
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel("channel1", name, importance)
-            channel.description = desc
-
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
-        }
-
-    }
 
 }

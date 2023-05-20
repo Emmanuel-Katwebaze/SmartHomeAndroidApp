@@ -58,6 +58,7 @@ class SelectEvent : AppCompatActivity() {
 
                         val intent = Intent(this, GoogleMaps::class.java)
                         startActivity(intent)
+                        finish()
                     }
                     2 -> {
                         // save the value to shared preferences
@@ -67,6 +68,7 @@ class SelectEvent : AppCompatActivity() {
 
                         val intent = Intent(this, GoogleMaps::class.java)
                         startActivity(intent)
+                        finish()
                     }
                     3 -> {
                         // save the value to shared preferences
@@ -76,6 +78,7 @@ class SelectEvent : AppCompatActivity() {
 
                         val intent = Intent(this, GoogleMaps::class.java)
                         startActivity(intent)
+                        finish()
                     }
                     4 -> {
                         // save the value to shared preferences
@@ -85,6 +88,7 @@ class SelectEvent : AppCompatActivity() {
 
                         val intent = Intent(this, GoogleMaps::class.java)
                         startActivity(intent)
+                        finish()
                     }
                     5 -> {
                         // save the value to shared preferences
@@ -94,6 +98,7 @@ class SelectEvent : AppCompatActivity() {
 
                         val intent = Intent(this, GoogleMaps::class.java)
                         startActivity(intent)
+                        finish()
                     }
                     6 -> {
                         // save the value to shared preferences
@@ -103,6 +108,7 @@ class SelectEvent : AppCompatActivity() {
 
                         val intent = Intent(this, GoogleMaps::class.java)
                         startActivity(intent)
+                        finish()
                     }
                     else -> {
                         // Default action if index doesn't match any specific case

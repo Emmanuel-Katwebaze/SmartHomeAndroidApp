@@ -1,9 +1,8 @@
 package com.example.smarthomeapp.fragments
 
 
-import android.app.Activity
-import android.app.Dialog
-import android.app.TimePickerDialog
+import android.app.*
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -64,7 +63,7 @@ class RoutinesFragment : Fragment() {
 
         val favoritesFAB = view?.findViewById<FloatingActionButton>(R.id.idFABAddRoutine)
 
-        favoritesFAB?.setOnClickListener { getMaps() }
+        favoritesFAB?.setOnClickListener { createRoutine() }
 
         setupListofDataIntoRecyclerView()
 
@@ -84,7 +83,7 @@ class RoutinesFragment : Fragment() {
         return view
     }
 
-    private fun getMaps() {
+    private fun createRoutine() {
         val intent = Intent(activity, CreateRoutine::class.java)
         startActivity(intent)
     }
@@ -203,18 +202,19 @@ class RoutinesFragment : Fragment() {
             //creating the instance of DatabaseHandler class
             val databaseHandler: DatabaseHandler = DatabaseHandler(requireContext())
 
-            //calling the deleteEmployee method of DatabaseHandler class to delete record
+            val routineIdToCancel = routine.id
+            //calling the deleteRoutine method of DatabaseHandler class to delete record
             val status = databaseHandler.deleteRoutine(RoutineModel(routine.id, "", "", "", "", ""))
             if (status > -1) {
                 Toast.makeText(
-                    requireContext(), "Record deleted successfully.", Toast.LENGTH_LONG
+                    requireContext(), "Routine deleted successfully.", Toast.LENGTH_LONG
                 ).show()
-
+                cancelNotification(routineIdToCancel)
                 setupListofDataIntoRecyclerView()
                 updateDialog?.dismiss()
             }else{
                 Toast.makeText(
-                    requireContext(), "Error deleting record", Toast.LENGTH_LONG
+                    requireContext(), "Error deleting routine", Toast.LENGTH_LONG
                 ).show()
             }
         }
@@ -248,6 +248,19 @@ class RoutinesFragment : Fragment() {
         )
 
         timePickerDialog.show()
+    }
+
+    fun cancelNotification(notificationId: Int) {
+        val intent = Intent(context, Notification::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            notificationId,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.cancel(pendingIntent)
     }
 
 

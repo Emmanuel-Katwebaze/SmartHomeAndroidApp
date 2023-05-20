@@ -139,7 +139,7 @@ class GoogleMaps : AppCompatActivity(), OnMapReadyCallback {
                 locationTextView.text = locationName
             }
             else {
-                Toast.makeText(applicationContext, "Loading", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "Loading", Toast.LENGTH_SHORT).show()
             }
         } else {
             // Clear the map and text views when the location is empty

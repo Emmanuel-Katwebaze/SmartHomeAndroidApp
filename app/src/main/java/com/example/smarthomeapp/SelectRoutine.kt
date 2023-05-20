@@ -5,8 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -78,7 +81,7 @@ class SelectRoutine : AppCompatActivity() {
             rvSelectRoutinesList.layoutManager = LinearLayoutManager(this)
 
             // Adapter class is initialized and list is passed in the param.
-            val itemAdapter = SelectRoutineAdapter(this, getItemsList())
+            val itemAdapter = SelectRoutineAdapter(this, getItemsList(), this)
             //adapter instance is set to the recyclerview to inflate the items
             rvSelectRoutinesList.adapter = itemAdapter
 
@@ -86,5 +89,38 @@ class SelectRoutine : AppCompatActivity() {
             rvSelectRoutinesList.visibility = View.GONE
 
         }
+    }
+
+    fun addToFavorites(routine: RoutineModel) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Add to Favorites")
+
+        builder.setPositiveButton("OK") { dialog, _ ->
+
+            val databaseHandler: DatabaseHandler = DatabaseHandler(this)
+            val status = databaseHandler.addFavoriteRoutine(
+                RoutineModel(
+                    routine.id, routine.routineName, routine.time, routine.notification, routine.location, routine.lastRun
+                )
+            )
+            if (status > -1) {
+                Toast.makeText(this, "Added to Favorites.", Toast.LENGTH_LONG).show()
+
+                setupListofDataIntoRecyclerView()
+
+                dialog.dismiss()// Dialog will be dismissed
+            }else{
+                Toast.makeText(
+                    this, "Error adding routine to favorites", Toast.LENGTH_LONG
+                ).show()
+            }
+
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.cancel()
+        }
+
+        builder.show()
     }
 }

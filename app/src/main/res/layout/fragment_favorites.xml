@@ -7,6 +7,7 @@
     tools:context=".fragments.FavoritesFragment">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/favoritesFragmentAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -32,8 +33,26 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <TextView
+        android:id="@+id/tv_ActiveFavoritesHd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F1F3F4"
+        android:paddingLeft="20dp"
+        android:paddingVertical="20dp"
+        android:layout_below="@+id/favoritesFragmentAppBar"
+        android:text="Active Favorites"
+        android:textSize="20sp"
+        tools:visibility="gone"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvFavoritesList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tv_ActiveFavoritesHd"
+        tools:visibility="gone"/>
 
     <RelativeLayout
+        android:id="@+id/noFavoritesLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
