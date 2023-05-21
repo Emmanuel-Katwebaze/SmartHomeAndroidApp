@@ -1,5 +1,6 @@
 package com.example.smarthomeapp.Database
 
+import android.app.Notification
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -284,6 +285,21 @@ class DatabaseHandler(context: Context) :
         // Return the list of IDs
         return idList
     }
+
+    fun updateLastRunById(id: Int, lastRun: String): Int {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(KEY_LAST_RUN, lastRun)
+
+        // Updating the row with the given ID
+        val success = db.update(TABLE_ROUTINES, contentValues, "$KEY_ID=?", arrayOf(id.toString()))
+
+        // Closing database connection
+        db.close()
+
+        return success
+    }
+
 
 
 }

@@ -13,20 +13,17 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.example.smarthomeapp.Database.DatabaseHandler
-import com.example.smarthomeapp.R
-import com.google.android.gms.location.LocationServices
 import java.util.*
 
 class Notification : BroadcastReceiver() {
 
-
     override fun onReceive(context: Context, intent: Intent) {
         val notificationId = intent.getIntExtra("notificationId", 0)
         val desiredLocation = intent.getStringExtra("locationExtra").toString()
+        val databaseHandler: DatabaseHandler = DatabaseHandler(context.applicationContext)
 
         Log.i("notify1", notificationId.toString())
         Log.i("notify2", desiredLocation)
@@ -45,7 +42,9 @@ class Notification : BroadcastReceiver() {
             val manager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.notify(notificationId, notification)
-        }else{
+
+            updateLastRun(notificationId, databaseHandler)
+        } else {
             // Define a LocationListener to listen for location updates
             val locationListener = object : LocationListener {
                 override fun onLocationChanged(location: Location) {
@@ -53,15 +52,17 @@ class Notification : BroadcastReceiver() {
 
                     if (currentLocationName != null && currentLocationName == desiredLocation) {
                         // The current location matches the desired location, show the notification
-                        val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
-                            .setSmallIcon(R.drawable.ic_launcher_foreground)
-                            .setContentTitle(intent.getStringExtra("routineExtra"))
-                            .setContentText(intent.getStringExtra("notificationExtra"))
-                            .build()
+                        val notification =
+                            NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+                                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                                .setContentTitle(intent.getStringExtra("routineExtra"))
+                                .setContentText(intent.getStringExtra("notificationExtra"))
+                                .build()
 
                         val manager =
                             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                         manager.notify(notificationId, notification)
+                        updateLastRun(notificationId, databaseHandler)
                     }
                 }
 
@@ -100,7 +101,27 @@ class Notification : BroadcastReceiver() {
         }
 
 
+    }
 
+    private fun updateLastRun(routineId: Int, databaseHandler: DatabaseHandler) {
+        val calendar: Calendar = Calendar.getInstance()
+
+        // Current Date
+        val year: Int = calendar.get(Calendar.YEAR)
+        val month: Int = calendar.get(Calendar.MONTH) + 1 // Month is zero-based, so add 1
+        val day: Int = calendar.get(Calendar.DAY_OF_MONTH)
+
+        // Current Time
+        val hour: Int = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute: Int = calendar.get(Calendar.MINUTE)
+        val second: Int = calendar.get(Calendar.SECOND)
+
+        // Create a formatted string with the date and time information
+        val currentDateTime: String =
+            String.format("%04d-%02d-%02d %02d:%02d:%02d", year, month, day, hour, minute, second)
+
+
+        databaseHandler.updateLastRunById(routineId, currentDateTime)
 
     }
 

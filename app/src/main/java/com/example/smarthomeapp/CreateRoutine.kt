@@ -42,7 +42,7 @@ class CreateRoutine : AppCompatActivity() {
         val save: AppCompatImageView = findViewById(R.id.save_button)
 
         save.setOnClickListener {
-            addRoutineRecord()
+            showProcessingDialog()
         }
 
         val addActionButton = findViewById<FloatingActionButton>(R.id.AddActionFAB)
@@ -73,8 +73,6 @@ class CreateRoutine : AppCompatActivity() {
             showTimePickerDialog()
             intent.putExtra("timeSet", false) // set timeSet value to false
         }
-
-
 
 
     }
@@ -227,8 +225,6 @@ class CreateRoutine : AppCompatActivity() {
             editor.putString("NotificationPrefs", inputText)
             editor.apply()
 
-            showProcessingDialog(input.text.toString())
-
         }
 
         builder.setNegativeButton("Cancel") { dialog, _ ->
@@ -256,7 +252,7 @@ class CreateRoutine : AppCompatActivity() {
         actionRowLayout.findViewById<TextView>(R.id.tv_AddNotification).text = notificationText
     }
 
-    private fun showProcessingDialog(value: String) {
+    private fun showProcessingDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Creating new routine")
         builder.setCancelable(false)
@@ -276,7 +272,7 @@ class CreateRoutine : AppCompatActivity() {
         dialog.show()
 
         Handler().postDelayed({
-
+            addRoutineRecord()
             dialog.dismiss()
         }, 3000)
 
@@ -313,13 +309,16 @@ class CreateRoutine : AppCompatActivity() {
                 finish()
             }
         } else {
-            Toast.makeText(applicationContext, "Routine, Event or Action Cannot be Empty", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                applicationContext,
+                "Routine, Event or Action Cannot be Empty",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
 
-    private fun scheduleNotification()
-    {
+    private fun scheduleNotification() {
         val intent = Intent(applicationContext, Notification::class.java)
         val routine = sharedPreferences.getString("routineName", null).toString()
         val notification = sharedPreferences.getString("NotificationPrefs", null).toString()
@@ -330,7 +329,8 @@ class CreateRoutine : AppCompatActivity() {
 
 
         val databaseHandler: DatabaseHandler = DatabaseHandler(this)
-        val notificationId = databaseHandler.getLastInsertedId() // Unique identifier for the pending intent
+        val notificationId =
+            databaseHandler.getLastInsertedId() // Unique identifier for the pending intent
         intent.putExtra("notificationId", notificationId)
 
         val pendingIntent = PendingIntent.getBroadcast(
@@ -344,62 +344,29 @@ class CreateRoutine : AppCompatActivity() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val time = getTime()
 
-        val timeInMillis = time
-
-
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = timeInMillis
-
-        // Use setRepeating instead of setExact or set
+        // Use setRepeating
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
+            time,
             AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
-
-        val hourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
-
-        val formattedTime = String.format("%02d:%02d", hourOfDay, minute)
-        val formattedTime12Hour = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(calendar.time)
 
         // Use setExact instead of setExactAndAllowWhileIdle
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //            alarmManager.setExact(
 //                AlarmManager.RTC_WAKEUP,
-//                calendar.timeInMillis,
+//                time,
 //                pendingIntent
 //            )
 //        } else {
 //            alarmManager.set(
 //                AlarmManager.RTC_WAKEUP,
-//                calendar.timeInMillis,
+//                time,
 //                pendingIntent
 //            )
 //        }
 
-
-
-        showAlert(time, routine, notification)
-    }
-
-    private fun showAlert(time: Long, routine: String, notification: String) {
-        if (!isFinishing) {
-            val date = Date(time)
-            val dateFormat = android.text.format.DateFormat.getLongDateFormat(applicationContext)
-            val timeFormat = android.text.format.DateFormat.getTimeFormat(applicationContext)
-
-            AlertDialog.Builder(this)
-                .setTitle("Notification Scheduled")
-                .setMessage(
-                    "Title: $routine" +
-                            "\nMessage: $notification" +
-                            "\nAt: ${timeFormat.format(date)}"
-                )
-                .setPositiveButton("Okay") { _, _ -> }
-                .show()
-        }
     }
 
 
